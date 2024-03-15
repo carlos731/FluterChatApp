@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "39740084138",
+    "project_id": "fluterchatpro",
+    "storage_bucket": "fluterchatpro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:39740084138:android:934313c290506243ad65d3",
+        "android_client_info": {
+          "package_name": "com.mobiledevchtsca.fluterchatpro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCG4-ClelIudlpO31n1hahbxGoAEX6m1sg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
