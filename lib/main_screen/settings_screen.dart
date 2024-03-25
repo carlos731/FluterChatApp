@@ -1,5 +1,9 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:fluterchatpro/providers/authentication_provider.dart';
+import 'package:fluterchatpro/utilities/constants.dart';
+import 'package:fluterchatpro/widgets/app_bar_back_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -37,7 +41,62 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = context.read<AuthenticationProvider>().userModel!;
+    final uid = ModalRoute.of(context)!.settings.arguments as String;
+
     return Scaffold(
+      appBar: AppBar(
+        leading: AppBarBackButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        centerTitle: true,
+        title: const Text('Settings'),
+        actions: [
+          currentUser.uid == uid
+              ? IconButton(
+                  // logout button
+                  onPressed: () {
+                    // create a dialog to confirm logout
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Logout'),
+                        content: const Text('Are you sure you want to logout?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);   
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              // logout
+                              await context 
+                                .read<AuthenticationProvider>()
+                                .logout()
+                                .whenComplete(() {
+                                  Navigator.pop(context);
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    Constants.loginScreen,
+                                    (route) => false,
+                                  );
+                                });
+                            },
+                            child: const Text('Logout'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.logout),
+                )
+              : const SizedBox(),
+        ],
+      ),
       body: Center(
         child: Card(
           child: SwitchListTile(
