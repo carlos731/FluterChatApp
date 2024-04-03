@@ -282,13 +282,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
                 label: 'Unfriend',
                 width: MediaQuery.of(context).size.width * 0.4,
-                backgroundColor:
-                    Theme.of(context).buttonTheme.colorScheme!.primary,
+                backgroundColor: Theme.of(context).cardColor,
                 textColor: Colors.white,
               ),
               buildElevatedButton(
                 onPressed: () async {
                   // navigate to chat screen
+                  // Navigate to chat screen with the folowing arguments
+                  // 1. friend uid 2. friend name 3. friend image 4. groupId with an empty string
+                  Navigator.pushNamed(
+                    context,
+                    Constants.chatScreen,
+                    arguments: {
+                      Constants.contactUID: userModel.uid,
+                      Constants.contactName: userModel.name,
+                      Constants.contactImage: userModel.image,
+                      Constants.groupId: '',
+                    },
+                  );
                 },
                 label: 'Chat',
                 width: MediaQuery.of(context).size.width * 0.4,
@@ -330,6 +341,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       width: width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+          elevation: 5,
           backgroundColor: backgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),

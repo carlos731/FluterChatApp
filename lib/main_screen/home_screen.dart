@@ -1,4 +1,4 @@
-import 'package:fluterchatpro/main_screen/chats_list_screen.dart';
+import 'package:fluterchatpro/main_screen/my_chats_screen.dart';
 import 'package:fluterchatpro/main_screen/groups_screen.dart';
 import 'package:fluterchatpro/main_screen/people_screen.dart';
 import 'package:fluterchatpro/providers/authentication_provider.dart';
@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
 
   final List<Widget> pages = const [
-    ChatsListScreen(),
+    MyChatsScreen(),
     GroupsScreen(),
     PeopleScreen(),
   ];

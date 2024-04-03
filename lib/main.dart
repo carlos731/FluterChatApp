@@ -5,12 +5,14 @@ import 'package:fluterchatpro/authentication/login_screen.dart';
 import 'package:fluterchatpro/authentication/otp_screen.dart';
 import 'package:fluterchatpro/authentication/user_information_screen.dart';
 import 'package:fluterchatpro/firebase_options.dart';
+import 'package:fluterchatpro/main_screen/chat_screen.dart';
 import 'package:fluterchatpro/main_screen/friend_requests_screen.dart';
 import 'package:fluterchatpro/main_screen/friends_screen.dart';
 import 'package:fluterchatpro/main_screen/home_screen.dart';
 import 'package:fluterchatpro/main_screen/profile_screen.dart';
 import 'package:fluterchatpro/main_screen/settings_screen.dart';
 import 'package:fluterchatpro/providers/authentication_provider.dart';
+import 'package:fluterchatpro/providers/chat_provider.dart';
 import 'package:fluterchatpro/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +30,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
       ],
       child: MyApp(savedThemeMode: savedThemeMode),
     ),
@@ -70,6 +73,7 @@ class MyApp extends StatelessWidget {
           Constants.settingsScreen: (context) => const SettingsScreen(),
           Constants.friendsScreen: (context) => const FriendsScreen(),
           Constants.friendRequestsScreen: (context) => const FriendRequestScreen(),
+          Constants.chatScreen: (context) => const ChatScreen(),
         },
       ),
     );

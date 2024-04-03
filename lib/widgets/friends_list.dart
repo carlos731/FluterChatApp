@@ -63,15 +63,26 @@ class FriendsList extends StatelessWidget {
                 trailing: ElevatedButton(
                   onPressed: () async {
                     if (viewType == FriendViewType.friends) {
-                      // Navigate to chat screen with uid as argument
-                      // Navigator.pushNamed(context, Constants.chatScreen, arguments: data.uid,);
+                      // Navigate to chat screen with the folowing arguments
+                      // 1. friend uid 2. friend name 3. friend image 4. groupId with an empty string
+                      Navigator.pushNamed(
+                        context,
+                        Constants.chatScreen,
+                        arguments: {
+                          Constants.contactUID: data.uid,
+                          Constants.contactName: data.name,
+                          Constants.contactImage: data.image,
+                          Constants.groupId: '',
+                        },
+                      );
                     } else if (viewType == FriendViewType.friendRequests) {
+                      // accept friend request
                       await context
                           .read<AuthenticationProvider>()
                           .acceptFriendRequest(friendID: data.uid)
                           .whenComplete(() {
-                        showSnackBar(context,
-                            'You are now friends with ${data.name}');
+                        showSnackBar(
+                            context, 'You are now friends with ${data.name}');
                       });
                     } else {
                       // check the check box

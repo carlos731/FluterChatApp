@@ -32,12 +32,16 @@ class _FriendsScreenState extends State<FriendsScreen> {
             CupertinoSearchTextField(
               placeholder: 'Search',
               style: const TextStyle(color: Colors.white),
-              onChanged: (value)  {
+              onChanged: (value) {
                 print(value);
               },
             ),
-        
-            const Expanded(child: FriendsList(viewType: FriendViewType.friends)),
+
+            const Expanded(
+              child: FriendsList(
+                viewType: FriendViewType.friends,
+              ),
+            ),
           ],
         ),
       ),
