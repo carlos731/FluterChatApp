@@ -1,4 +1,6 @@
+import 'package:fluterchatpro/enums/enums.dart';
 import 'package:fluterchatpro/providers/chat_provider.dart';
+import 'package:fluterchatpro/utilities/global_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +14,7 @@ class MessageReplyPreview extends StatelessWidget {
       builder: (context, chatProvider, child) {
         final messageReply = chatProvider.messageReplyModel;
         final isMe = messageReply!.isMe;
+        final type = messageReply.messageType;
 
         return Container(
           padding: const EdgeInsets.all(8),
@@ -30,10 +33,9 @@ class MessageReplyPreview extends StatelessWidget {
                 fontSize: 12,
               ),
             ),
-            subtitle: Text(
-              messageReply.message,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            subtitle: messageToShow(
+              type: type,
+              message: messageReply.message,
             ),
             trailing: IconButton(
               onPressed: () {

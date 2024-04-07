@@ -63,6 +63,23 @@ class AuthenticationProvider extends ChangeNotifier {
     }
   }
 
+  // update user status
+  Future<void> updateUserStatus({required bool value}) async {
+    await _firestore
+        .collection(Constants.users)
+        .doc(_auth.currentUser!.uid)
+        .update({Constants.isOnline: value});
+
+    // update user lastSeen
+    if (!value) {
+      // print('lastSeen');
+      await _firestore
+      .collection(Constants.users)
+      .doc(_auth.currentUser!.uid)
+      .update({Constants.lastSeen: DateTime.now().microsecondsSinceEpoch.toString()});
+    }
+  }
+
   // get user data from firestore
   Future<void> getUserDataFromFireStore() async {
     DocumentSnapshot documentSnapshot =
@@ -181,8 +198,8 @@ class AuthenticationProvider extends ChangeNotifier {
         userModel.image = imageUrl;
       }
 
-      userModel.lastSeen = DateTime.now().millisecondsSinceEpoch.toString();
-      userModel.createdAt = DateTime.now().millisecondsSinceEpoch.toString();
+      userModel.lastSeen = DateTime.now().microsecondsSinceEpoch.toString();
+      userModel.createdAt = DateTime.now().microsecondsSinceEpoch.toString();
 
       _userModel = userModel;
       _uid = userModel.uid;
@@ -255,7 +272,7 @@ class AuthenticationProvider extends ChangeNotifier {
       await _firestore.collection(Constants.users).doc(_uid).update({
         Constants.sentFriendRequestsUIDs: FieldValue.arrayRemove([friendID]),
       });
-    } on FirebaseException catch(e) {
+    } on FirebaseException catch (e) {
       print(e);
     }
   }
@@ -299,13 +316,16 @@ class AuthenticationProvider extends ChangeNotifier {
   Future<List<UserModel>> getFriendsList(String uid) async {
     List<UserModel> friendsList = [];
 
-    DocumentSnapshot documentSnapshot = await _firestore.collection(Constants.users).doc(uid).get();
+    DocumentSnapshot documentSnapshot =
+        await _firestore.collection(Constants.users).doc(uid).get();
 
     List<dynamic> friendsUIDs = documentSnapshot.get(Constants.friendsUIDs);
 
     for (String friendUID in friendsUIDs) {
-      DocumentSnapshot documentSnapshot = await _firestore.collection(Constants.users).doc(friendUID).get();
-      UserModel friend = UserModel.fromMap(documentSnapshot.data() as Map<String, dynamic>);
+      DocumentSnapshot documentSnapshot =
+          await _firestore.collection(Constants.users).doc(friendUID).get();
+      UserModel friend =
+          UserModel.fromMap(documentSnapshot.data() as Map<String, dynamic>);
       friendsList.add(friend);
     }
 
@@ -316,13 +336,19 @@ class AuthenticationProvider extends ChangeNotifier {
   Future<List<UserModel>> getFriendRequestsList(String uid) async {
     List<UserModel> friendRequestsList = [];
 
-    DocumentSnapshot documentSnapshot = await _firestore.collection(Constants.users).doc(uid).get();
+    DocumentSnapshot documentSnapshot =
+        await _firestore.collection(Constants.users).doc(uid).get();
 
-    List<dynamic> friendRequestsUIDs = documentSnapshot.get(Constants.friendRequestsUIDs);
+    List<dynamic> friendRequestsUIDs =
+        documentSnapshot.get(Constants.friendRequestsUIDs);
 
     for (String friendRequestUID in friendRequestsUIDs) {
-      DocumentSnapshot documentSnapshot = await _firestore.collection(Constants.users).doc(friendRequestUID).get();
-      UserModel friendRequest = UserModel.fromMap(documentSnapshot.data() as Map<String, dynamic>);
+      DocumentSnapshot documentSnapshot = await _firestore
+          .collection(Constants.users)
+          .doc(friendRequestUID)
+          .get();
+      UserModel friendRequest =
+          UserModel.fromMap(documentSnapshot.data() as Map<String, dynamic>);
       friendRequestsList.add(friendRequest);
     }
 
@@ -336,5 +362,4 @@ class AuthenticationProvider extends ChangeNotifier {
     await sharedPreferences.remove(Constants.userModel);
     notifyListeners();
   }
-
 }

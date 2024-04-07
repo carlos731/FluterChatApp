@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:date_format/date_format.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fluterchatpro/enums/enums.dart';
 import 'package:fluterchatpro/utilities/assets_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,7 +29,7 @@ Widget userImageWidget({
       radius: radius,
       backgroundColor: Colors.grey[300],
       backgroundImage: imageUrl.isNotEmpty
-          ? NetworkImage(imageUrl)
+          ? CachedNetworkImageProvider(imageUrl) //NetworkImage(imageUrl)
           : const AssetImage(AssetsManager.userImage) as ImageProvider,
     ),
   );
@@ -86,4 +89,72 @@ Center buildDateTime(groupedByValue) {
       ),
     ),
   );
+}
+
+Widget messageToShow({
+  required MessageEnum type,
+  required String message,
+}) {
+  switch (type) {
+    case MessageEnum.text:
+      return Text(
+        message,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      );
+    case MessageEnum.image:
+      return const Row(
+        children: [
+          Icon(Icons.image_outlined),
+          SizedBox(width: 10),
+          Text(
+            'Image',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      );
+    case MessageEnum.video:
+      return const Row(
+        children: [
+          Icon(Icons.video_library_outlined),
+          SizedBox(width: 10),
+          Text(
+            'Video',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      );
+    case MessageEnum.audio:
+      return const Row(
+        children: [
+          Icon(Icons.audiotrack_outlined),
+          SizedBox(width: 10),
+          Text(
+            'Audio',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      );
+    default:
+      return Text(
+        message,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      );
+  }
+}
+
+// store file to storage and return file url
+Future<String> storeFileToStorage({
+  required File file,
+  required String reference,
+}) async {
+  UploadTask uploadTask =
+      FirebaseStorage.instance.ref().child(reference).putFile(file);
+  TaskSnapshot taskSnapshot = await uploadTask;
+  String fileUrl = await taskSnapshot.ref.getDownloadURL();
+  return fileUrl;
 }

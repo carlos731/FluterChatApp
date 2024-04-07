@@ -28,7 +28,11 @@ class _ChatScreenState extends State<ChatScreen> {
     final isGroupChat = groupId.isNotEmpty ? true : false;
 
     return Scaffold(
-      appBar: AppBar(title: ChatAppBar(contactUID: contactUID)),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        title: ChatAppBar(contactUID: contactUID),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

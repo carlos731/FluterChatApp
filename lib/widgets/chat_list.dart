@@ -101,6 +101,16 @@ class _ChatListState extends State<ChatList> {
                 child: buildDateTime(groupedByValue),
               ),
               itemBuilder: (context, dynamic element) {
+                // set message as seen
+                if (!element.isSeen && element.senderUID != uid) {
+                  context.read<ChatProvider>().setMessageAsSeen(
+                    userId: uid,
+                    contactUID: widget.contactUID,
+                    messageId: element.messageId,
+                    groupId: widget.groupId,
+                  );
+                }
+
                 // check if we sent the last message
                 final isMe = element.senderUID == uid;
                 return isMe
