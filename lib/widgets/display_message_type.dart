@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluterchatpro/enums/enums.dart';
+import 'package:fluterchatpro/widgets/audio_player_widget.dart';
 import 'package:flutter/material.dart';
 
 class DisplayMessageType extends StatelessWidget {
@@ -45,10 +46,7 @@ class DisplayMessageType extends StatelessWidget {
             fit: BoxFit.cover,
           );
         case MessageEnum.audio:
-          return Image.network(
-            message,
-            fit: BoxFit.cover,
-          );
+          return AudioPlayerWidget(audioUrl: message);
         default:
           return Text(
             message,
