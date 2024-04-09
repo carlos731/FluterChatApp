@@ -66,8 +66,9 @@ class MyMessageWidget extends StatelessWidget {
                                 const SizedBox(height: 5),
                                 DisplayMessageType(
                                   message: message.repliedMessage,
-                                  type: message.repliedMessageType,
+                                  type: message.repliedMessageType, // aqui muda o tipo da mensagem de resposta
                                   color: Colors.white,
+                                  isReply: false, // false para aparecer a midia do arquivo
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -88,6 +89,7 @@ class MyMessageWidget extends StatelessWidget {
                         message: message.message,
                         type: message.messageType,
                         color: Colors.white,
+                        isReply: false,
                       ),
                       // Text(
                       //   message.message,

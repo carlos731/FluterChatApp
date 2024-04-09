@@ -69,6 +69,7 @@ class ContactMessageWidget extends StatelessWidget {
                                   message: message.repliedMessage,
                                   type: message.repliedMessageType,
                                   color: Colors.black,
+                                  isReply: false, // false para aparecer a midia do arquivo
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -89,6 +90,7 @@ class ContactMessageWidget extends StatelessWidget {
                         message: message.message,
                         type: message.messageType,
                         color: Colors.black,
+                        isReply: false,
                       ),
                       // Text(
                       //   message.message,

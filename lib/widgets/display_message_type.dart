@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluterchatpro/enums/enums.dart';
 import 'package:fluterchatpro/widgets/audio_player_widget.dart';
+import 'package:fluterchatpro/widgets/video_player_widget.dart';
 import 'package:flutter/material.dart';
 
 class DisplayMessageType extends StatelessWidget {
@@ -9,6 +10,7 @@ class DisplayMessageType extends StatelessWidget {
     required this.message,
     required this.type,
     required this.color,
+    required this.isReply,
     this.maxLines,
     this.overflow,
   });
@@ -16,6 +18,7 @@ class DisplayMessageType extends StatelessWidget {
   final String message;
   final MessageEnum type;
   final Color color;
+  final bool isReply;
   final int? maxLines;
   final TextOverflow? overflow;
 
@@ -34,24 +37,27 @@ class DisplayMessageType extends StatelessWidget {
             overflow: overflow,
           );
         case MessageEnum.image:
-          return CachedNetworkImage(
+          return isReply ? const Icon(Icons.image) : CachedNetworkImage(
             width: 200,
             height: 200,
             imageUrl: message,
             fit: BoxFit.cover,
           );
         case MessageEnum.video:
-          return Image.network(
-            message,
-            fit: BoxFit.cover,
+          return isReply ? const Icon(Icons.video_collection) :  VideoPlayerWidget(
+            videoUrl: message,
+            color: color,
           );
         case MessageEnum.audio:
-          return AudioPlayerWidget(audioUrl: message);
+          return isReply ? const Icon(Icons.audiotrack) :  AudioPlayerWidget(
+            audioUrl: message,
+            color: color,
+          );
         default:
           return Text(
             message,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: color,
               fontSize: 16.0,
             ),
             maxLines: maxLines,
