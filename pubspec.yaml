@@ -61,6 +61,8 @@ dependencies:
   audioplayers: ^6.0.0
   path_provider: ^2.1.2
   cached_video_player: ^2.0.4
+  emoji_picker_flutter: ^1.6.3
+  animate_do: ^3.1.2
 
 dev_dependencies:
   flutter_test:

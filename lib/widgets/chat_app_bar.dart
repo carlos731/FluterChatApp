@@ -9,7 +9,10 @@ import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ChatAppBar extends StatefulWidget {
-  const ChatAppBar({super.key, required this.contactUID});
+  const ChatAppBar({
+    super.key,
+    required this.contactUID,
+  });
 
   final String contactUID;
 
@@ -21,9 +24,8 @@ class _ChatAppBarState extends State<ChatAppBar> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: context
-          .read<AuthenticationProvider>()
-          .userStream(userID: widget.contactUID),
+      stream:
+          context.read<AuthenticationProvider>().userStream(userID: widget.contactUID),
       builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
           return const Center(child: Text('Something went wrong'));
@@ -36,7 +38,8 @@ class _ChatAppBarState extends State<ChatAppBar> {
         final userModel =
             UserModel.fromMap(snapshot.data!.data() as Map<String, dynamic>);
 
-        DateTime lastSeen = DateTime.fromMicrosecondsSinceEpoch(int.parse(userModel.lastSeen));
+        DateTime lastSeen =
+            DateTime.fromMicrosecondsSinceEpoch(int.parse(userModel.lastSeen));
 
         return Row(
           children: [
@@ -63,10 +66,14 @@ class _ChatAppBarState extends State<ChatAppBar> {
                   ),
                 ),
                 Text(
-                  userModel.isOnline ? 'Online' : 'Last seen ${timeago.format(lastSeen)}',
+                  userModel.isOnline
+                      ? 'Online'
+                      : 'Last seen ${timeago.format(lastSeen)}',
                   style: GoogleFonts.openSans(
                     fontSize: 12,
-                    color: userModel.isOnline ? Colors.green : Colors.grey.shade600,
+                    color: userModel.isOnline
+                        ? Colors.green
+                        : Colors.grey.shade600,
                   ),
                 ),
               ],

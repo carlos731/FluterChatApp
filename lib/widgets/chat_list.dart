@@ -5,7 +5,9 @@ import 'package:fluterchatpro/providers/chat_provider.dart';
 import 'package:fluterchatpro/utilities/global_methods.dart';
 import 'package:fluterchatpro/widgets/contact_message_widget.dart';
 import 'package:fluterchatpro/widgets/my_message_widget.dart';
+import 'package:fluterchatpro/widgets/reactions_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +34,76 @@ class _ChatListState extends State<ChatList> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void onContextMenuClicked(
+      {required String item, required MessageModel message}) {
+    switch (item) {
+      case 'Reply':
+        // set the message reply to true
+        final messageReply = MessageReplyModel(
+          message: message.message,
+          senderUID: message.senderUID,
+          senderName: message.senderName,
+          senderImage: message.senderImage,
+          messageType: message.messageType,
+          isMe: true,
+        );
+
+        context.read<ChatProvider>().setMessageReplyModel(messageReply);
+        break;
+      case 'Copy':
+        // copy message to clipboard
+        Clipboard.setData(ClipboardData(text: message.message));
+        showSnackBar(context, 'Message copied to clipboard');
+        break;
+      case 'Delete':
+        // TODO delete message
+        // context.read<ChatProvider>().deleteMessage(
+        //   userId: uid,
+        //   contactUID: widget.contactUID,
+        //   messageId: message.messageId,
+        //   groupId: widget.groupId,
+        // );
+        break;
+    }
+  }
+
+  showReactionsDialog({required MessageModel message, required String uid}) {
+    showDialog(
+      context: context,
+      builder: (context) => ReactionsDialog(
+        uid: uid,
+        message: message,
+        onReactionsTap: (reaction) {
+          Navigator.pop(context);
+          print('pressed $reaction');
+          // if its a plus reaction show bottom with emoji keyboard
+          if (reaction == '➕') {
+            //   // TODO show emoji keyboard
+            //   showEmojiKeyboard(
+            //     context: context,
+            //     onEmojiSelected: (emoji) {
+            //       // add emoji to message
+            //       context
+            //           .read<ChatProvider>()
+            //           .addEmojiToMessage(emoji: emoji, message: message);
+            //     },
+            //   );
+          } else {
+            // TODO add reaction to message
+            // context
+            //     .read<ChatProvider>()
+            //     .addReactionToMessage(reaction: reaction, messaage: message);
+          }
+        },
+        onContextMenuTap: (item) {
+          Navigator.pop(context);
+          // TODO handle context menu tap
+          onContextMenuClicked(item: item, message: message);
+        },
+      ),
+    );
   }
 
   @override
@@ -69,7 +141,7 @@ class _ChatListState extends State<ChatList> {
             ),
           );
         }
-    
+
         // automatically scrool to the bottom on new message
         WidgetsBinding.instance!.addPostFrameCallback((_) {
           _scrollController.animateTo(
@@ -78,7 +150,7 @@ class _ChatListState extends State<ChatList> {
             curve: Curves.easeInOut,
           );
         });
-    
+
         if (snapshot.hasData) {
           final messagesList = snapshot.data!;
           return GroupedListView<dynamic, DateTime>(
@@ -101,35 +173,40 @@ class _ChatListState extends State<ChatList> {
               // set message as seen
               if (!element.isSeen && element.senderUID != uid) {
                 context.read<ChatProvider>().setMessageAsSeen(
-                  userId: uid,
-                  contactUID: widget.contactUID,
-                  messageId: element.messageId,
-                  groupId: widget.groupId,
-                );
+                      userId: uid,
+                      contactUID: widget.contactUID,
+                      messageId: element.messageId,
+                      groupId: widget.groupId,
+                    );
               }
-    
+
               // check if we sent the last message
               final isMe = element.senderUID == uid;
               return isMe
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                      child: MyMessageWidget(
-                        message: element,
-                        onRightSwipe: () {
-                          // set the message reply to true
-                          final messageReply = MessageReplyModel(
-                            message: element.message,
-                            senderUID: element.senderUID,
-                            senderName: element.senderName,
-                            senderImage: element.senderImage,
-                            messageType: element.messageType,
-                            isMe: isMe,
-                          );
-    
-                          context
-                              .read<ChatProvider>()
-                              .setMessageReplyModel(messageReply);
-                        },
+                  ? InkWell(
+                      onLongPress: () {
+                        showReactionsDialog(message: element, uid: uid);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                        child: MyMessageWidget(
+                          message: element,
+                          onRightSwipe: () {
+                            // set the message reply to true
+                            final messageReply = MessageReplyModel(
+                              message: element.message,
+                              senderUID: element.senderUID,
+                              senderName: element.senderName,
+                              senderImage: element.senderImage,
+                              messageType: element.messageType,
+                              isMe: isMe,
+                            );
+
+                            context
+                                .read<ChatProvider>()
+                                .setMessageReplyModel(messageReply);
+                          },
+                        ),
                       ),
                     )
                   : Padding(
@@ -146,7 +223,7 @@ class _ChatListState extends State<ChatList> {
                             messageType: element.messageType,
                             isMe: isMe,
                           );
-    
+
                           context
                               .read<ChatProvider>()
                               .setMessageReplyModel(messageReply);
@@ -157,9 +234,9 @@ class _ChatListState extends State<ChatList> {
             groupComparator: (value1, value2) => value2.compareTo(value1),
             itemComparator: (item1, item2) {
               var firstItem = item1.timeSent;
-    
+
               var secondItem = item2.timeSent;
-    
+
               return secondItem!.compareTo(firstItem!);
             }, // optional
             useStickyGroupSeparators: true, // optional
