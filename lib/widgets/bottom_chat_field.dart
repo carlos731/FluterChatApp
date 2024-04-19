@@ -383,7 +383,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
             // show emoji container
             isShowEmojiPicker
                 ? SizedBox(
-                    height: 200,
+                    height: 200,//MediaQuery.of(context).size.height * 0.3,
                     child: EmojiPicker(
                       onEmojiSelected: (category, Emoji emoji) {
                         _textEditingController.text =
